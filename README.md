@@ -1,10 +1,8 @@
-# retail-media-lab
+# Overview
 
 **Amazon Ads analytics the way a brand's data science team does it: AMC-style SQL, multi-touch
 attribution, a geo holdout test, a marketing mix model and a budget optimizer. Every method is
-scored against a simulator that knows the true answer.** The SQL is written once in Snowflake's
-dialect. An LLM analytics agent sits on top, served over FastAPI with a Copilot Studio connector,
-and the repo ships Power BI and Dataiku kits.
+scored against a simulator that knows the true answer.**
 
 [![CI](https://github.com/faizanreza-cs/retail-media-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/faizanreza-cs/retail-media-lab/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
