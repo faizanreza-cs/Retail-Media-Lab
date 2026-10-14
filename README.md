@@ -1,13 +1,22 @@
-# Overview
+<div align="center">
 
-**Amazon Ads analytics the way a brand's data science team does it: AMC-style SQL, multi-touch
-attribution, a geo holdout test, a marketing mix model and a budget optimizer. Every method is
-scored against a simulator that knows the true answer.**
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/logo-dark.svg">
+  <img src="docs/img/logo.svg" alt="Retail Media Lab" height="100">
+</picture>
+
+<p><em>Amazon Ads analytics the way a brand's data science team does it, with every method scored against a simulator that knows the true answer.</em></p>
 
 [![CI](https://github.com/faizanreza-cs/retail-media-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/faizanreza-cs/retail-media-lab/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![SQL](https://img.shields.io/badge/SQL-Snowflake-29b5e8)
 ![License](https://img.shields.io/badge/license-MIT-green)
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2)](https://www.linkedin.com/in/YOUR-LINKEDIN-ID)
+[![X](https://img.shields.io/badge/X-Follow-000000?logo=x&logoColor=white)](https://x.com/YOUR_X_HANDLE)
+
+</div>
+
+## ⚡ Overview
 
 Amazon's attribution reports credit an ad with every purchase it touched. A brand's real
 questions are different: what did the ads **cause**, and where should the next dollar go? Real
@@ -120,9 +129,6 @@ the best one: 94% of it at ±20%, 95% at ±10%. The model is most reliable near 
 | Optimizer (`rml/optimize.py`) | Daily spend per channel that maximises incremental sales, with budget, change limits and minimum ROAS | SciPy (SLSQP) |
 | Ads Copilot (`rml/agent/`) | LLM agent that answers questions by calling the analyses, saved queries and guarded SQL | Anthropic, OpenAI, Azure OpenAI, or offline mock |
 | API (`rml/api.py`) | REST endpoints and `/ask`, optional API key | FastAPI |
-| Power BI kit (`powerbi/`) | Star-schema export, DAX measures, theme, build guide | Power BI |
-| Dataiku kit (`dataiku/`) | Flow layout and Python recipes on a Snowflake connection | Dataiku |
-| Copilot Studio (`copilot/`, `docs/copilot-studio.md`) | OpenAPI connector so a Copilot Studio agent can call the Ads Copilot | Microsoft Copilot Studio |
 
 ```mermaid
 flowchart LR
@@ -132,9 +138,7 @@ flowchart LR
     WH --> INC[Geo holdout]
     WH --> MMM[Marketing mix model] --> OPT[Budget optimizer]
     SQL & ATT & INC & MMM & OPT --> RES[results.json]
-    RES --> AG[Ads Copilot agent] --> API[FastAPI /ask] --> CS[Copilot Studio / Teams]
-    RES --> PBI[Power BI kit]
-    WH --> DKU[Dataiku flow]
+    RES --> AG[Ads Copilot agent] --> API[FastAPI /ask]
 ```
 
 ## Quickstart
@@ -159,33 +163,12 @@ export RML_PROVIDER=anthropic ANTHROPIC_API_KEY=... RML_MODEL=<model id>
 
 Or with Docker: `docker build -t retail-media-lab . && docker run -p 8000:8000 retail-media-lab`.
 
-## Snowflake
+## Integrations
 
-All SQL is written in Snowflake's dialect. CI runs every query on DuckDB through sqlglot's
-translation; on Snowflake the same files run unchanged.
-
-1. Run [`snowflake/setup.sql`](snowflake/setup.sql). It creates a warehouse, database, a loader
-   role and a **read-only analyst role** for the agent, API and Dataiku.
-2. `pip install "retail-media-lab[snowflake]"`, set `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`,
-   `SNOWFLAKE_PASSWORD` (or `SNOWFLAKE_PRIVATE_KEY_FILE`), `SNOWFLAKE_ROLE=RML_LOADER` and
-   `SNOWFLAKE_WAREHOUSE=RML_WH`, then run `rml load`.
-3. Switch to the analyst role and `RML_BACKEND=snowflake`. Saved queries, `rml sql` and the
-   agent then run against Snowflake.
-4. Optional (Enterprise Edition): the aggregation policy at the end of `setup.sql` makes
-   Snowflake itself refuse to list individual shoppers to the analyst role, as AMC does.
-
-## Power BI, Dataiku and Copilot Studio
-
-- **Power BI:** `rml export-powerbi` writes the star schema to `powerbi/data/`.
-  [`powerbi/README.md`](powerbi/README.md) lists the relationships, page layout, DAX measures
-  ([`measures.dax`](powerbi/measures.dax)) and theme ([`theme.json`](powerbi/theme.json)).
-- **Dataiku:** [`dataiku/README.md`](dataiku/README.md) gives the flow (SQL recipes, then
-  attribution, geo test, MMM and budget recipes) on a Snowflake connection. The recipes are
-  thin wrappers around the tested library.
-- **Copilot Studio:** [`docs/copilot-studio.md`](docs/copilot-studio.md) adds the Ads Copilot to
-  a Copilot Studio agent through a custom connector
-  ([`copilot/ads-copilot.swagger.json`](copilot/ads-copilot.swagger.json)), so the team can
-  ask in Teams.
+The same SQL runs on Snowflake ([`snowflake/setup.sql`](snowflake/setup.sql) creates a read-only
+role for the agent and API), and the repo carries starter kits for
+[Power BI](powerbi/README.md), [Dataiku](dataiku/README.md) and
+[Copilot Studio](docs/copilot-studio.md). The kits aren't run in CI.
 
 ## Guardrails
 
@@ -210,23 +193,14 @@ translation; on Snowflake the same files run unchanged.
 
 ## Tests and evals
 
-- **95 tests**, all offline:
-  - The simulator's maths and determinism.
-  - Every saved query run on DuckDB, plus the threshold.
-  - Attribution rules checked by hand on toy journeys.
-  - Geo-test recovery and a placebo test that must find nothing.
-  - MMM recovery for DSP, ROAS consistent with incremental sales, and the optimizer's
-    constraints and equal marginal ROAS.
-  - SQL guard: 22 ways to leak shopper ids that must fail, 9 legitimate uses that must keep
-    working, masked errors and the query timeout.
-  - Provider translation for Anthropic, OpenAI and Azure OpenAI, using fake clients.
-  - The API with its key check.
-  - The Power BI measures against the exported columns, the connector against the API, and
-    the Dataiku recipes against the library.
-- **Agent eval** (`make eval`): 21 golden questions, with the expected tool and the facts each
-  answer must contain, read from the results at eval time. The offline mock passes 21/21,
-  which checks the tools and routing. Run `make eval-llm` to score a real model on the same
-  questions.
+**95 offline tests** cover the simulator, every saved query on DuckDB, attribution on hand-checked
+journeys, geo-test recovery with a placebo that must find nothing, MMM recovery and the
+optimizer's constraints, the SQL guard (22 leak attempts blocked, 9 legitimate queries kept), the
+LLM providers with fake clients, the API, and the kits against the code they wrap.
+
+**Agent eval** (`make eval`): 21 golden questions with the expected tool and the facts each answer
+must contain, read from the data at eval time. The offline mock passes 21/21, which checks the
+tools and routing; `make eval-llm` scores a real model on the same questions.
 
 ## Limitations
 
@@ -236,32 +210,6 @@ translation; on Snowflake the same files run unchanged.
 - **The MMM is national.** A geo-level model, or calibrating the MMM with experiments, would
   narrow the Sponsored Products interval. Its intervals weren't checked for coverage the way
   the geo test's were.
-- **Paths not run in CI:** the Snowflake loader, the Dataiku recipes and the Power BI report are
-  not run in CI. They use the same tested code and SQL.
-
-```
-rml/
-  synth.py          simulator with ground truth
-  sql/*.sql         AMC-style saved queries (Snowflake SQL)
-  warehouse.py      DuckDB / Snowflake backends
-  attribution.py    last/first touch, linear, Markov, Shapley
-  incrementality.py difference-in-differences, synthetic control
-  mmm.py            marketing mix model (ensemble)
-  optimize.py       budget optimizer, scoring against the truth
-  pipeline.py       build -> results.json
-  agent/            Ads Copilot: providers, tools, SQL guard, loop
-  evals/            golden questions + runner
-  api.py · cli.py · charts.py · powerbi.py
-powerbi/  dataiku/  copilot/  snowflake/  docs/
-```
-
-## Need this for your brand?
-
-I build retail media and marketing analytics for consumer brands: AMC and Amazon Ads analysis,
-attribution and incrementality testing, marketing mix models, and AI assistants.
-
-**Faizan Reza**, 
-faizanreza01@gmail.com
 
 ## License
 
