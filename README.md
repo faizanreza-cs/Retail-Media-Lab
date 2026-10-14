@@ -258,12 +258,11 @@ powerbi/  dataiku/  copilot/  snowflake/  docs/
 ## Need this for your brand?
 
 I build retail media and marketing analytics for consumer brands: AMC and Amazon Ads analysis,
-attribution and incrementality testing, marketing mix models, and AI assistants on top of
-Snowflake, Power BI and Dataiku.
+attribution and incrementality testing, marketing mix models, and AI assistants.
 
-**Faizan Reza**, AI engineer · [GitHub](https://github.com/faizanreza-cs) · faizanreza01@gmail.com
+**Faizan Reza**, 
+faizanreza01@gmail.com
 
 ## License
 
-MIT. Not affiliated with Amazon. Amazon Ads, Amazon DSP and Amazon Marketing Cloud are
-trademarks of Amazon. The brand, products and data in this repo are fictional.
+MIT.
