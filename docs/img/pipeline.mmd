@@ -1,0 +1,6 @@
+flowchart TB
+    SIM[Simulator<br/>with ground truth] --> WH[(Warehouse<br/>DuckDB or Snowflake)]
+    WH --> SQL[AMC-style<br/>saved queries] & ATT[Attribution] & INC[Geo holdout] & MMM[Marketing<br/>mix model]
+    MMM --> OPT[Budget optimizer]
+    SQL & ATT & INC & MMM & OPT --> RES[results.json]
+    RES --> AG[Ads Copilot agent] --> API[FastAPI /ask]

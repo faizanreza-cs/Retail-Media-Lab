@@ -130,16 +130,12 @@ the best one: 94% of it at ±20%, 95% at ±10%. The model is most reliable near 
 | Ads Copilot (`rml/agent/`) | LLM agent that answers questions by calling the analyses, saved queries and guarded SQL | Anthropic, OpenAI, Azure OpenAI, or offline mock |
 | API (`rml/api.py`) | REST endpoints and `/ask`, optional API key | FastAPI |
 
-```mermaid
-flowchart LR
-    SIM[Simulator<br/>with ground truth] --> WH[(Warehouse<br/>DuckDB or Snowflake)]
-    WH --> SQL[AMC-style saved queries]
-    WH --> ATT[Attribution]
-    WH --> INC[Geo holdout]
-    WH --> MMM[Marketing mix model] --> OPT[Budget optimizer]
-    SQL & ATT & INC & MMM & OPT --> RES[results.json]
-    RES --> AG[Ads Copilot agent] --> API[FastAPI /ask]
-```
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/pipeline-dark.png">
+  <img src="docs/img/pipeline.png" alt="How retail-media-lab fits together" width="721">
+</picture>
+</p>
 
 ## Quickstart
 
