@@ -21,7 +21,7 @@ from rml.agent.provider import get_provider
 
 def check_token(x_api_key: str = Header(default="")) -> None:
     token = os.environ.get("RML_API_TOKEN")
-    if token and not secrets.compare_digest(x_api_key, token):
+    if token and not secrets.compare_digest(x_api_key.encode(), token.encode()):
         raise HTTPException(401, "missing or wrong X-API-Key")
 
 

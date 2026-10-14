@@ -83,7 +83,11 @@ def main(argv: list[str] | None = None) -> int:
             print(f"wrote {path}")
         return 0
     elif args.cmd == "charts":
-        from rml.charts import render
+        try:
+            from rml.charts import render
+        except ImportError:
+            print("charts need matplotlib: pip install 'retail-media-lab[charts]'")
+            return 1
 
         for path in render(args.out):
             print(f"wrote {path}")

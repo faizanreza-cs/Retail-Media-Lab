@@ -123,9 +123,11 @@ def response_chart(res: dict, path: Path) -> Path:
         y = curves.response(ch, xs) / 1e3
         ax.plot(xs / 1e3, y, color=c, lw=1.8, label=CHANNEL_NAMES[ch])
         cur, rec = plan[ch]["current_daily_spend"], plan[ch]["recommended_daily_spend"]
-        ax.plot(cur / 1e3, curves.response(ch, cur) / 1e3, "o", ms=7, mfc=SURFACE, mec=c, mew=1.8)
+        ax.plot(cur / 1e3, curves.response(ch, cur) / 1e3, "o", ms=7, mfc=SURFACE, mec=c, mew=1.8,
+                zorder=3)  # fmt: skip
+        # recommended on top: a plan point can land on another channel's current point
         ax.plot(rec / 1e3, curves.response(ch, rec) / 1e3, "o", ms=7, color=c, mec=SURFACE,
-                mew=1.5)  # fmt: skip
+                mew=1.5, zorder=4)  # fmt: skip
         ax.annotate(CHANNEL_NAMES[ch], (xs[-1] / 1e3, y[-1]), xytext=(6, 0),
                     textcoords="offset points", va="center", fontsize=8.5, color=INK2)  # fmt: skip
     ax.set_xlabel("Daily spend, $ thousands", color=INK2, fontsize=8.5)
@@ -141,7 +143,8 @@ def roas_chart(res: dict, path: Path) -> Path:
     did = next(r for r in res["incrementality"]["results"] if r["method"].startswith("diff"))
     fig, ax = _axes(
         "The model pins down DSP, not Sponsored Products",
-        "Average ROAS over two years: MMM median with 90% interval, the DSP geo test, the truth",
+        "Average ROAS over two years: MMM ensemble mean with 90% interval, the DSP geo test, "
+        "the truth",
     )
     ax.grid(axis="y", visible=False)
     ax.grid(axis="x", color=GRID, linewidth=0.6)

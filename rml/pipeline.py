@@ -58,9 +58,8 @@ def analyse(wh: Warehouse, truth: dict | None = None, n_search: int = 500) -> di
 
     # --- marketing mix model; "current" = the 13 weeks before the geo test
     df = mmm.national_daily(sales, media, wh.query("SELECT * FROM calendar"))
-    test_start = pd.Timestamp(inc["start"])
-    before = df.index[df["date"] < test_start]
-    model = mmm.fit(df, n_search=n_search, bau_days=slice(before[-91], before[-1] + 1))
+    bau = mmm.days_before(df, pd.Timestamp(inc["start"]))
+    model = mmm.fit(df, n_search=n_search, bau_days=bau)
     channels = model.channels.copy()
     if truth:
         channels["true_roas"] = [truth["media"][c]["roas"] for c in channels["channel"]]

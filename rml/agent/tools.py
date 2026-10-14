@@ -14,7 +14,7 @@ from typing import Any
 import pandas as pd
 
 from rml import optimize, pipeline
-from rml.agent.sql_guard import UnsafeSQLError, check_result, validate
+from rml.agent.sql_guard import UnsafeSQLError, check_result, scrub_error, validate
 from rml.config import get_settings
 from rml.queries import MIN_USERS, run_saved, saved_queries
 from rml.synth import CHANNEL_NAMES, CHANNELS
@@ -51,8 +51,12 @@ def t_run_saved_query(name: str) -> dict:
 
 
 def t_run_sql(sql: str) -> dict:
-    safe = validate(sql, get_settings().sql_row_limit)
-    df = get_warehouse().query(safe)
+    s = get_settings()
+    safe = validate(sql, s.sql_row_limit)
+    try:
+        df = get_warehouse().query(safe, timeout=s.sql_timeout)
+    except Exception as e:  # engine errors can quote data values; mask them for the model
+        raise ValueError(f"query failed: {scrub_error(str(e))}") from None
     check_result(df)
     return _ok(df, note="Read-only query, row-capped.", sql=safe)
 
@@ -202,6 +206,8 @@ def execute(name: str, args: dict[str, Any]) -> tuple[str, bool]:
     if name not in TOOLS:
         return json.dumps({"error": f"unknown tool {name!r}"}), True
     fn, _ = TOOLS[name]
+    if "_invalid_arguments" in args:  # the model's arguments weren't valid JSON
+        return json.dumps({"error": "the tool arguments were not valid JSON; call it again"}), True
     try:
         return json.dumps(fn(**args), default=str), False
     except (UnsafeSQLError, ValueError, TypeError, KeyError, FileNotFoundError) as e:

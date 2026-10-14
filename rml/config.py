@@ -23,6 +23,8 @@ class Settings:
     effort: str = field(default_factory=lambda: _env("RML_EFFORT", "medium"))
     max_agent_steps: int = field(default_factory=lambda: int(_env("RML_MAX_STEPS", "8")))
     sql_row_limit: int = field(default_factory=lambda: int(_env("RML_SQL_LIMIT", "200")))
+    # seconds before an agent-written query is stopped
+    sql_timeout: float = field(default_factory=lambda: float(_env("RML_SQL_TIMEOUT", "30")))
     # opt in to Anthropic's server-side refusal fallback on models that support it
     fallbacks: bool = field(
         default_factory=lambda: _env("RML_FALLBACKS", "0").lower() in {"1", "true", "yes"}

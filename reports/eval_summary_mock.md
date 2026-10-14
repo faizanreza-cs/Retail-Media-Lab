@@ -8,7 +8,7 @@
 | answer_accuracy | 1.0 |
 | pass_rate | 1.0 |
 | tool_error_rate | 0.0 |
-| median_latency_ms | 11 |
+| median_latency_ms | 10 |
 | total_input_tokens | 0 |
 | total_output_tokens | 0 |
 

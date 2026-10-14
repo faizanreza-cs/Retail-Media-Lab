@@ -23,11 +23,11 @@ true effect of every channel, which shows exactly how far each standard method g
 |---|---|---|---|
 | How much do ads drive? | Any click-based attribution | 5,809 purchases credited to ads | **3,234** caused by ads (attribution over-credits **1.8x**) |
 | Which channel drives purchases? | Last touch / Shapley | Sponsored Products 58% / 46% | **43%** |
-| What did DSP add? | Geo holdout, difference-in-differences | iROAS **2.03** (95% CI 1.88-2.18) | 1.90 |
+| What did DSP add? | Geo holdout, difference-in-differences | iROAS **2.03** (95% CI 1.87-2.19) | 1.90 |
 | | Geo holdout, synthetic control | iROAS **1.95** (95% CI 1.70-2.20) | 1.90 |
-| ROAS by channel | Marketing mix model | DSP **1.92** (90% interval 1.78-2.12) | 2.00 |
-| | | Sponsored Products 1.61 (**1.32-3.89**, can't pin it down) | 3.00 |
-| Where should budget go? | Optimizer on the MMM curves (each channel moves at most 30%) | Move money from Display and Products into DSP and Brands | **+0.8%** ad-driven sales at the same budget (about $130k a year), 75% of the best possible plan |
+| ROAS by channel | Marketing mix model | DSP **1.95** (90% interval 1.78-2.12) | 2.00 |
+| | | Sponsored Products 2.00 (**1.32-3.89**, can't pin it down) | 3.00 |
+| Where should budget go? | Optimizer on the MMM curves (each channel moves at most 30%) | Move money from Display and Products into DSP and Brands | **+1.0%** ad-driven sales at the same budget (about $168k a year), 89% of the best possible plan |
 
 ### 1. Attribution: click-based methods can't see causation
 
@@ -56,11 +56,16 @@ loss ($175k) inside their confidence intervals:
 
 | Method | Sales change in test geos | Sales lost | iROAS |
 |---|---|---|---|
-| Difference-in-differences (geo and week fixed effects, clustered SE) | -8.6% | $186.8k (95% CI $173.3k-$200.3k) | 2.03 (1.88-2.18) |
+| Difference-in-differences (geo and week fixed effects, clustered SE) | -8.6% | $186.8k (95% CI $172.3k-$201.3k) | 2.03 (1.87-2.19) |
 | Synthetic control (placebo-test interval) | -8.3% | $179.2k ($156.3k-$202.1k) | 1.95 (1.70-2.20) |
 | **Truth** | | **$175.1k** | **1.90** |
 
 The spend the test saved is estimated from control-geo spend at $92.0k (true $92.3k).
+
+With only 20 geos, are the intervals honest? In placebo tests that pretend 5 control geos were
+switched off, the 95% intervals wrongly excluded zero 5.3% of the time for
+difference-in-differences (t-based clustered errors, 300 tests) and 7% for synthetic control
+(100 tests). Normal-based clustered errors would have given 8.3%.
 
 ### 3. The marketing mix model, and where it can't decide
 
@@ -73,12 +78,14 @@ best (an ensemble). Its intervals combine that model uncertainty with resampled 
 
 | Channel | ROAS (90% interval) | True | Marginal ROAS at current spend | True |
 |---|---|---|---|---|
-| Sponsored Products | 1.61 (1.32-3.89) | 3.00 | 1.10 (0.87-1.26) | 0.84 |
-| Sponsored Brands | 2.10 (1.73-2.90) | 2.40 | 1.29 (0.67-1.79) | 1.12 |
-| Sponsored Display | 1.30 (0.86-1.72) | 1.60 | 0.96 (0.61-1.30) | 0.93 |
-| Amazon DSP | **1.92 (1.78-2.12)** | 2.00 | **1.57 (1.41-1.71)** | 1.51 |
+| Sponsored Products | 2.00 (1.32-3.89) | 3.00 | 1.09 (0.87-1.26) | 0.84 |
+| Sponsored Brands | 2.19 (1.73-2.90) | 2.40 | 1.26 (0.67-1.79) | 1.12 |
+| Sponsored Display | 1.28 (0.86-1.72) | 1.60 | 0.94 (0.61-1.30) | 0.93 |
+| Amazon DSP | **1.95 (1.78-2.12)** | 2.00 | **1.57 (1.41-1.71)** | 1.51 |
 
-DSP is pinned down: the MMM (1.92), the geo test (1.95-2.03) and the truth (2.00) agree.
+Point estimates are the ensemble mean, so ROAS times spend equals the incremental sales the
+model reports. DSP is pinned down: the MMM (1.95), the geo test (1.95-2.03) and the truth (2.00)
+agree.
 Sponsored Products is always on and close to saturation, so its spend barely varies and the
 data can't separate it from baseline demand. The wide interval says so honestly. The fix is an
 experiment: an SP budget-split test, like the DSP holdout.
@@ -87,20 +94,21 @@ experiment: an SP budget-split test, like the DSP holdout.
 
 ![Response curves](docs/img/response_curves.png)
 
-At the current $17.5k a day, the optimizer equalises marginal ROAS within a ±30% limit per
-channel:
+At the current $17.5k a day and a ±30% limit per channel, the optimizer moves money until the
+next dollar earns the same everywhere it can: Products and Brands end at a marginal ROAS of
+1.16, while Display and DSP stop at their limits.
 
 | Channel | Current daily spend | Recommended | Change |
 |---|---|---|---|
-| Sponsored Products | $8,622 | $8,311 | -3.6% |
-| Sponsored Brands | $3,181 | $3,292 | +3.5% |
+| Sponsored Products | $8,622 | $7,890 | -8.5% |
+| Sponsored Brands | $3,181 | $3,533 | +11.1% |
 | Sponsored Display | $2,195 | $1,536 | -30.0% |
-| Amazon DSP | $3,461 | $4,319 | +24.8% |
+| Amazon DSP | $3,461 | $4,500 | +30.0% |
 
-Scored with the simulator's true curves, the plan raises ad-driven sales by **0.8%**
-($44,403 to $44,764 a day, about $130k a year) at the same budget. That's 75% of the best plan
-possible under the same limits (+1.1%). With tighter limits the model's plan comes closer to
-the best one: 93% of it at ±20%, 96% at ±10%. The model is most reliable near current spend.
+Scored with the simulator's true curves, the plan raises ad-driven sales by **1.0%**
+($44,403 to $44,863 a day, about $168k a year) at the same budget. That's 89% of the best plan
+possible under the same limits (+1.2%). With tighter limits the model's plan comes closer to
+the best one: 94% of it at ±20%, 95% at ±10%. The model is most reliable near current spend.
 
 ## What's inside
 
@@ -165,6 +173,8 @@ translation; on Snowflake the same files run unchanged.
    `SNOWFLAKE_WAREHOUSE=RML_WH`, then run `rml load`.
 3. Switch to the analyst role and `RML_BACKEND=snowflake`. Saved queries, `rml sql` and the
    agent then run against Snowflake.
+4. Optional (Enterprise Edition): the aggregation policy at the end of `setup.sql` makes
+   Snowflake itself refuse to list individual shoppers to the analyst role, as AMC does.
 
 ## Power BI, Dataiku and Copilot Studio
 
@@ -182,24 +192,35 @@ translation; on Snowflake the same files run unchanged.
 ## Guardrails
 
 - **Model-written SQL** must be a single read-only SELECT on the allowed tables. Table
-  functions, LATERAL and file or network functions are blocked, and the row count is capped.
-- **No shopper ids leave the warehouse.** Queries can't output `user_id` outside an aggregate,
-  and any result containing a shopper id is rejected, however the query produced it. Saved
-  queries also drop rows covering fewer than 100 shoppers, as AMC does.
+  functions, LATERAL, PIVOT and file or network functions are blocked, the row count is capped
+  and a query is stopped after 30 seconds.
+- **Shopper ids stay in the warehouse.** sqlglot resolves every column of the query, then the
+  guard follows `user_id` through aliases, CTEs, subqueries, unions and `*`. It may be counted,
+  grouped by, or joined on another `user_id`, but never returned, put in a function or
+  compared with a value. Results are also scanned for id-shaped values, and engine errors are
+  masked before the model sees them (a failed cast quotes the value it saw). Saved queries
+  drop rows covering fewer than 100 shoppers, as AMC does.
+- **What the guard doesn't do:** enforce that 100-shopper minimum on ad-hoc SQL, or stop someone
+  who already knows a shopper id from piecing things together over many queries. That takes
+  engine-level controls: AMC itself, or a Snowflake aggregation policy (optional block in
+  `snowflake/setup.sql`).
 - **The engine is a second line of defence:** DuckDB opens read-only with external access
-  disabled; on Snowflake the agent uses the read-only role.
+  disabled; on Snowflake the agent uses the read-only role, and the same timeout is sent with
+  each query.
 - **The API is read-only and can require a key** (`RML_API_TOKEN`, `X-API-Key` header). The LLM
   provider is set by the server, never by the caller.
 
 ## Tests and evals
 
-- **57 tests**, all offline:
+- **95 tests**, all offline:
   - The simulator's maths and determinism.
   - Every saved query run on DuckDB, plus the threshold.
   - Attribution rules checked by hand on toy journeys.
   - Geo-test recovery and a placebo test that must find nothing.
-  - MMM recovery for DSP, and the optimizer's constraints.
-  - SQL guard attacks.
+  - MMM recovery for DSP, ROAS consistent with incremental sales, and the optimizer's
+    constraints and equal marginal ROAS.
+  - SQL guard: 22 ways to leak shopper ids that must fail, 9 legitimate uses that must keep
+    working, masked errors and the query timeout.
   - Provider translation for Anthropic, OpenAI and Azure OpenAI, using fake clients.
   - The API with its key check.
   - The Power BI measures against the exported columns, the connector against the API, and
@@ -215,7 +236,8 @@ translation; on Snowflake the same files run unchanged.
   effects are simpler than real shopper behaviour. The value is in knowing the truth, which
   real data never gives you.
 - **The MMM is national.** A geo-level model, or calibrating the MMM with experiments, would
-  narrow the Sponsored Products interval.
+  narrow the Sponsored Products interval. Its intervals weren't checked for coverage the way
+  the geo test's were.
 - **Paths not run in CI:** the Snowflake loader, the Dataiku recipes and the Power BI report are
   not run in CI. They use the same tested code and SQL.
 

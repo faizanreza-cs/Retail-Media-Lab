@@ -93,6 +93,9 @@ class Agent:
             if turn.stop_reason == "refusal":
                 result.answer = turn.text
                 break
+            if turn.stop_reason == "max_tokens":  # a cut-off tool call must not run
+                result.answer = turn.text or "The answer was cut off before it finished."
+                break
             messages.append({"role": "assistant", "content": turn.content})
             if not turn.tool_calls:
                 result.answer = turn.text

@@ -48,4 +48,5 @@ different.
 - Keep the key in the connector's connection, never in the OpenAPI file. Rotate it like any
   other secret.
 - The API is read-only: it can't change campaigns or budgets, only recommend them.
-- SQL from the agent is checked and runs read-only, and results can't contain shopper ids.
+- SQL from the agent is checked and runs read-only with a timeout, and shopper ids can only be
+  counted, grouped or joined on, never returned (see the README's Guardrails for the limits).

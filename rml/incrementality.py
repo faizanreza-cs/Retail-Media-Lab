@@ -55,7 +55,9 @@ def diff_in_diff(weekly: pd.DataFrame, test_geos: list[str], start: pd.Timestamp
     df["treated"] = (df["geo_id"].isin(test_geos) & (df["week"] >= start)).astype(int)
     df["log_sales"] = np.log(df["sales"])
     fit = smf.ols("log_sales ~ C(geo_id) + C(week) + treated", data=df).fit(
-        cov_type="cluster", cov_kwds={"groups": pd.factorize(df["geo_id"])[0]}
+        cov_type="cluster",
+        cov_kwds={"groups": pd.factorize(df["geo_id"])[0]},
+        use_t=True,  # t with (geos - 1) degrees of freedom: only 20 clusters
     )
     delta = float(fit.params["treated"])
     lo, hi = (float(x) for x in fit.conf_int().loc["treated"])

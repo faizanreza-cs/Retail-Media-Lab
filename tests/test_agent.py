@@ -36,6 +36,20 @@ def test_tool_errors_go_back_to_the_model_not_up():
     assert err and "max_change" in json.loads(out)["error"]
 
 
+def test_cut_off_tool_arguments_go_back_as_an_error(monkeypatch):
+    monkeypatch.setenv("RML_MODEL", "m")
+    monkeypatch.setenv("OPENAI_API_KEY", "test")
+    prov = provider.OpenAIProvider()
+    cut = SimpleNamespace(name="optimize_budget", arguments='{"max_change": 0.')
+    msg = SimpleNamespace(content=None, tool_calls=[SimpleNamespace(id="c0", function=cut)])
+    resp = SimpleNamespace(choices=[SimpleNamespace(message=msg)])
+    completions = SimpleNamespace(create=lambda **kw: resp)
+    prov.client = SimpleNamespace(chat=SimpleNamespace(completions=completions))
+    turn = prov.complete("sys", [{"role": "user", "content": "plan"}], tool_definitions())
+    out, is_error = execute(turn.tool_calls[0].name, turn.tool_calls[0].input)
+    assert is_error and "not valid JSON" in json.loads(out)["error"]
+
+
 def test_tool_schemas_are_complete():
     for t in tool_definitions():
         assert t["description"] and t["input_schema"]["type"] == "object"

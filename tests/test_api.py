@@ -25,3 +25,5 @@ def test_api_key_is_enforced_when_set(monkeypatch):
     assert client.get("/roas").status_code == 401
     assert client.get("/roas", headers={"X-API-Key": "wrong"}).status_code == 401
     assert client.get("/roas", headers={"X-API-Key": "s3cret"}).status_code == 200
+    odd = {"X-API-Key": "caf\u00e9".encode("latin-1")}  # non-ASCII: a clean 401, not a 500
+    assert client.get("/roas", headers=odd).status_code == 401

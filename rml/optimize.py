@@ -42,19 +42,23 @@ def optimize(
     def sales(x: np.ndarray) -> float:
         return float(sum(model.response(c, x[i]) for i, c in enumerate(CHANNELS)))
 
+    # Solve for u = spend / current spend (around 1) rather than dollars: SLSQP's
+    # finite-difference steps are absolute, too small to move sales at dollar scale.
     scale = max(sales(base), 1.0)
-    cons: list[dict[str, Any]] = [{"type": "eq", "fun": lambda x: (x.sum() - total) / total}]
+    cons: list[dict[str, Any]] = [{"type": "eq", "fun": lambda u: (u @ base - total) / total}]
     if min_roas is not None:
-        cons.append({"type": "ineq", "fun": lambda x: (sales(x) - min_roas * x.sum()) / scale})
+        cons.append(
+            {"type": "ineq", "fun": lambda u: (sales(u * base) - min_roas * (u @ base)) / scale}
+        )
     res = minimize(
-        lambda x: -sales(x) / scale,
-        base,
+        lambda u: -sales(u * base) / scale,
+        np.ones_like(base),
         method="SLSQP",
-        bounds=list(zip(lo, hi, strict=True)),
+        bounds=[(1 - max_change, 1 + max_change)] * len(base),
         constraints=cons,
-        options={"ftol": 1e-10, "maxiter": 500},
+        options={"ftol": 1e-12, "maxiter": 500},
     )
-    x = np.clip(res.x, lo, hi)
+    x = np.clip(res.x * base, lo, hi)
     feasible = abs(x.sum() - total) <= 1e-6 * total and (
         min_roas is None or sales(x) >= min_roas * x.sum() * (1 - 1e-6)
     )

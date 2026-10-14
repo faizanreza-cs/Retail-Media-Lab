@@ -30,3 +30,17 @@ GRANT SELECT ON FUTURE TABLES IN SCHEMA RML.AMC TO ROLE RML_ANALYST;
 -- Replace <your_user> with your Snowflake user name
 GRANT ROLE RML_LOADER TO USER <your_user>;
 GRANT ROLE RML_ANALYST TO USER <your_user>;
+
+-- Optional, after `rml load` (Enterprise Edition): an AMC-style aggregation policy. Under the
+-- analyst role, queries on the shopper tables must aggregate, and groups smaller than 100 rows
+-- are folded into a remainder, so not even a query that slipped past the SQL guard can list
+-- individual shoppers. The loader role is exempt. Not run in CI.
+-- CREATE AGGREGATION POLICY IF NOT EXISTS RML.AMC.MIN_GROUP_100
+--     AS () RETURNS AGGREGATION_CONSTRAINT ->
+--         CASE
+--             WHEN CURRENT_ROLE() = 'RML_ANALYST' THEN AGGREGATION_CONSTRAINT(MIN_GROUP_SIZE => 100)
+--             ELSE NO_AGGREGATION_CONSTRAINT()
+--         END;
+-- ALTER TABLE RML.AMC.CONVERSIONS SET AGGREGATION POLICY RML.AMC.MIN_GROUP_100;
+-- ALTER TABLE RML.AMC.DSP_IMPRESSIONS SET AGGREGATION POLICY RML.AMC.MIN_GROUP_100;
+-- ALTER TABLE RML.AMC.SPONSORED_ADS_TRAFFIC SET AGGREGATION POLICY RML.AMC.MIN_GROUP_100;

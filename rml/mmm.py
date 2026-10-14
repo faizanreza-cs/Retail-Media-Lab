@@ -152,6 +152,14 @@ class Curves:
         )
 
 
+def days_before(df: pd.DataFrame, start: pd.Timestamp, days: int = 91) -> slice:
+    """Rows of the ``days`` days before ``start``: "current" spend, ahead of the geo test."""
+    before = df.index[df["date"] < pd.Timestamp(start)]
+    if len(before) < days:
+        raise ValueError(f"need {days} days of data before {start:%Y-%m-%d}")
+    return slice(int(before[-days]), int(before[-1]) + 1)
+
+
 @dataclass
 class MMMResult:
     curves: Curves
@@ -215,7 +223,8 @@ def fit(
             target["roas"].append(roas)
             target["mroas"].append(mroas)
 
-    roas_pt, mroas_pt = np.median(point["roas"], axis=0), np.median(point["mroas"], axis=0)
+    # ensemble means: the same numbers as incremental_sales / spend and as Curves (also means)
+    roas_pt, mroas_pt = np.mean(point["roas"], axis=0), np.mean(point["mroas"], axis=0)
     pool = {s: np.vstack(point[s] + draws[s]) for s in point}
     contrib = np.mean(contrib_all, axis=0)
     rows = []

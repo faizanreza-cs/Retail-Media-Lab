@@ -195,7 +195,10 @@ class OpenAIProvider:
         for c in msg.tool_calls or []:
             fn = getattr(c, "function", None)  # only function tools are defined
             if fn is not None:
-                args = json.loads(fn.arguments or "{}")
+                try:
+                    args = json.loads(fn.arguments or "{}")
+                except json.JSONDecodeError:  # e.g. cut off at max_tokens; the tool says so
+                    args = {"_invalid_arguments": True}
                 calls.append(ToolCall(id=c.id, name=fn.name, input=args))
         content: list[Any] = []
         if msg.content:

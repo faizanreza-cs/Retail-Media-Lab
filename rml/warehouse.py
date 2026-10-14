@@ -18,23 +18,28 @@ import sqlglot
 
 from rml.config import Settings, get_settings
 
-TABLES = (
-    "asins",
-    "geos",
-    "geo_test",
-    "calendar",
-    "daily_geo_media",
-    "daily_geo_sales",
-    "dsp_impressions",
-    "sponsored_ads_traffic",
-    "conversions",
-)
+# tables the API, the agent and SQL may read, with their columns (truth stays out on purpose)
+SCHEMA: dict[str, tuple[str, ...]] = {
+    "asins": ("tracked_asin", "product_name", "category", "list_price"),
+    "geos": ("geo_id", "geo_name", "region", "population_share"),
+    "geo_test": ("geo_id", "test_group", "channel", "test_start", "test_end"),
+    "calendar": ("date", "event", "new_year", "coupon"),
+    "daily_geo_media": ("date", "geo_id", "channel", "spend", "impressions"),
+    "daily_geo_sales": ("date", "geo_id", "sales", "orders"),
+    "dsp_impressions": ("user_id", "impression_dt_utc", "campaign_id", "campaign", "impressions",
+                        "total_cost"),
+    "sponsored_ads_traffic": ("user_id", "event_dt_utc", "ad_product_type", "campaign_id",
+                              "campaign", "impressions", "clicks", "spend"),
+    "conversions": ("user_id", "conversion_event_dt_utc", "tracked_asin", "purchases",
+                    "product_sales", "new_to_brand"),
+}  # fmt: skip
+TABLES = tuple(SCHEMA)
 
 
 class Warehouse(Protocol):
     name: str
 
-    def query(self, sql: str) -> pd.DataFrame: ...
+    def query(self, sql: str, timeout: float | None = None) -> pd.DataFrame: ...
 
 
 def to_duckdb(sql: str) -> str:
@@ -56,16 +61,24 @@ class DuckDBWarehouse:
         )
         self._lock = threading.Lock()
 
-    def query(self, sql: str) -> pd.DataFrame:
+    def query(self, sql: str, timeout: float | None = None) -> pd.DataFrame:
+        """Run one query; ``timeout`` seconds stops it (a cross join can run for hours)."""
         with self._lock:
             cur = self._con.cursor()  # one cursor per call: safe across API threads
+        timer = threading.Timer(timeout, cur.interrupt) if timeout else None
+        if timer:
+            timer.start()
         try:
             return cur.execute(to_duckdb(sql)).df()
+        except duckdb.InterruptException as e:
+            raise TimeoutError(f"query stopped after {timeout:g} s") from e
         finally:
+            if timer:
+                timer.cancel()
             cur.close()
 
 
-def _snowflake_params() -> dict[str, str]:
+def _snowflake_params() -> dict[str, Any]:
     """Connection settings from SNOWFLAKE_* variables (account, user, password or key, ...)."""
     keys = {
         "account": "SNOWFLAKE_ACCOUNT",
@@ -76,8 +89,9 @@ def _snowflake_params() -> dict[str, str]:
         "role": "SNOWFLAKE_ROLE",
         "warehouse": "SNOWFLAKE_WAREHOUSE",
     }
-    params = {k: os.environ[v] for k, v in keys.items() if os.environ.get(v)}
+    params: dict[str, Any] = {k: os.environ[v] for k, v in keys.items() if os.environ.get(v)}
     params["database"] = os.environ.get("SNOWFLAKE_DATABASE", "RML")
+    params["client_session_keep_alive"] = True  # the API keeps one connection open
     params["schema"] = os.environ.get("SNOWFLAKE_SCHEMA", "AMC")
     missing = {"account", "user"} - params.keys()
     if missing:
@@ -100,10 +114,10 @@ class SnowflakeWarehouse:
             connection = snowflake.connector.connect(**_snowflake_params())
         self._con = connection
 
-    def query(self, sql: str) -> pd.DataFrame:
+    def query(self, sql: str, timeout: float | None = None) -> pd.DataFrame:
         cur = self._con.cursor()
         try:
-            cur.execute(sql)
+            cur.execute(sql, timeout=int(timeout) if timeout else None)
             df = cur.fetch_pandas_all()
         finally:
             cur.close()
@@ -135,10 +149,16 @@ def _duckdb(path: str) -> DuckDBWarehouse:
     return DuckDBWarehouse(path)
 
 
+@lru_cache(maxsize=1)
+def _snowflake() -> SnowflakeWarehouse:
+    # one connection for the process (logging in takes seconds); cursors are per query
+    return SnowflakeWarehouse()
+
+
 def get_warehouse(settings: Settings | None = None) -> Warehouse:
     s = settings or get_settings()
     if s.backend == "snowflake":
-        return SnowflakeWarehouse()
+        return _snowflake()
     if s.backend != "duckdb":
         raise ValueError(f"unknown backend {s.backend!r} (duckdb | snowflake)")
     return _duckdb(str(s.db_path))
@@ -147,3 +167,4 @@ def get_warehouse(settings: Settings | None = None) -> Warehouse:
 def reset_cache() -> None:
     """Drop cached connections, e.g. after `rml build` replaced the database file."""
     _duckdb.cache_clear()
+    _snowflake.cache_clear()
