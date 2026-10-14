@@ -1,0 +1,60 @@
+import numpy as np
+import pytest
+
+from rml import mmm, optimize, pipeline
+from rml.synth import CHANNELS
+
+
+def _rows(built):
+    return {r["channel"]: r for r in built["mmm"]["channels"]}
+
+
+def test_model_fits_and_pins_down_dsp(built):
+    assert built["mmm"]["fit"]["r2"] > 0.8
+    rows = _rows(built)
+    dsp = rows["DSP"]
+    assert dsp["roas"] == pytest.approx(dsp["true_roas"], rel=0.15)
+    assert dsp["mroas_at_bau"] == pytest.approx(dsp["true_mroas"], rel=0.15)
+    assert dsp["mroas_at_bau"] > rows["SP"]["mroas_at_bau"]  # the next dollar: DSP over SP
+    # always-on, saturated SP is the hardest channel to pin down: its interval is the widest
+    width = {c: r["roas_high"] - r["roas_low"] for c, r in rows.items()}
+    assert width["SP"] > width["DSP"]
+
+
+def test_curves_round_trip(built):
+    c = pipeline.curves(built)
+    again = mmm.Curves.from_dict(c.to_dict())
+    xs = np.array([0.0, 1000.0, 5000.0])
+    assert np.allclose(c.response("SB", xs), again.response("SB", xs))
+    assert c.response("SB", 0.0) == pytest.approx(0.0)
+
+
+def test_plan_respects_budget_and_limits(built):
+    c = pipeline.curves(built)
+    current = {r["channel"]: r["bau_daily_spend"] for r in built["mmm"]["channels"]}
+    plan = optimize.optimize(c, current, max_change=0.2)
+    rec = {r["channel"]: r["recommended_daily_spend"] for r in plan["channels"]}
+    assert sum(rec.values()) == pytest.approx(sum(current.values()), rel=1e-6)
+    for ch in CHANNELS:
+        assert 0.8 * current[ch] - 1e-6 <= rec[ch] <= 1.2 * current[ch] + 1e-6
+    assert plan["recommended_daily_incremental_sales"] >= plan["current_daily_incremental_sales"]
+    bigger = optimize.optimize(c, current, total=sum(current.values()) * 1.5)
+    assert bigger["total_daily_budget"] == pytest.approx(sum(current.values()) * 1.5)
+    with pytest.raises(ValueError):
+        optimize.optimize(c, current, min_roas=50)
+    with pytest.raises(ValueError):
+        optimize.optimize(c, current, max_change=1.5)
+
+
+def test_recommended_plan_really_helps(built):
+    score = built["budget"]["truth"]
+    assert score["uplift_pct"] > 0
+    assert score["share_of_best_captured"] > 0.4
+
+
+def test_true_curves_match_the_simulator(built):
+    t = built["truth"]
+    tc = optimize.TrueCurves(t["media"], t["geo_weights"])
+    for ch in CHANNELS:
+        x = t["media"][ch]["bau_daily_spend"]
+        assert tc.marginal_roas(ch, x) == pytest.approx(t["media"][ch]["mroas_at_bau"], rel=0.01)

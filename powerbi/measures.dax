@@ -1,0 +1,66 @@
+// Retail Media Lab measures for Power BI Desktop.
+// Data: `rml export-powerbi` writes powerbi/data/*.csv. Create each measure with
+// Modeling > New measure, pasting one block at a time.
+
+Total Spend = SUM ( fact_media_daily[spend] )
+
+Total Impressions = SUM ( fact_media_daily[impressions] )
+
+Total Sales = SUM ( fact_sales_daily[sales] )
+
+Total Orders = SUM ( fact_sales_daily[orders] )
+
+Blended ROAS = DIVIDE ( [Total Sales], [Total Spend] )
+
+CPM = DIVIDE ( [Total Spend], [Total Impressions] ) * 1000
+
+Spend Share =
+DIVIDE ( [Total Spend], CALCULATE ( [Total Spend], ALL ( dim_channel ) ) )
+
+Spend vs Last Year % =
+VAR ThisPeriod = [Total Spend]
+VAR LastYear = CALCULATE ( [Total Spend], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+RETURN DIVIDE ( ThisPeriod - LastYear, LastYear )
+
+Sales vs Last Year % =
+VAR ThisPeriod = [Total Sales]
+VAR LastYear = CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+RETURN DIVIDE ( ThisPeriod - LastYear, LastYear )
+
+// Attribution page: put method on the legend and channel on the axis
+Attribution Share = AVERAGE ( fact_attribution[share] )
+
+Credited Purchases = SUM ( fact_attribution[credited_purchasers] )
+
+// MMM page
+MMM ROAS = AVERAGE ( fact_channel_roas[roas] )
+
+MMM ROAS Low = AVERAGE ( fact_channel_roas[roas_low] )
+
+MMM ROAS High = AVERAGE ( fact_channel_roas[roas_high] )
+
+Marginal ROAS = AVERAGE ( fact_channel_roas[mroas_at_bau] )
+
+True ROAS = AVERAGE ( fact_channel_roas[true_roas] )
+
+Modelled Contribution = SUM ( fact_mmm_contribution[contribution] )
+
+// Budget page
+Current Daily Spend = SUM ( fact_budget_plan[current_daily_spend] )
+
+Recommended Daily Spend = SUM ( fact_budget_plan[recommended_daily_spend] )
+
+Budget Change % =
+DIVIDE ( [Recommended Daily Spend] - [Current Daily Spend], [Current Daily Spend] )
+
+Expected Incremental Sales Change =
+SUM ( fact_budget_plan[recommended_incremental_sales] )
+    - SUM ( fact_budget_plan[current_incremental_sales] )
+
+// Geo test page
+Holdout Sales = SUM ( fact_geo_test_weekly[holdout_actual] )
+
+Synthetic Control Sales = SUM ( fact_geo_test_weekly[synthetic_control] )
+
+Holdout Gap % =
+DIVIDE ( [Holdout Sales] - [Synthetic Control Sales], [Synthetic Control Sales] )

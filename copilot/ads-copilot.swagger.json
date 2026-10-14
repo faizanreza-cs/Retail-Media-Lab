@@ -1,0 +1,79 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Retail Media Lab Ads Copilot",
+    "description": "Answers questions about Amazon Ads performance (AMC-style queries, attribution, geo tests, marketing mix model) and recommends budget plans.",
+    "version": "0.1.0"
+  },
+  "host": "your-api-host.example.com",
+  "basePath": "/",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "apiKey": {"type": "apiKey", "in": "header", "name": "X-API-Key"}
+  },
+  "security": [{"apiKey": []}],
+  "paths": {
+    "/ask": {
+      "post": {
+        "operationId": "AskAdsCopilot",
+        "summary": "Ask the Ads Copilot",
+        "description": "Answers one question about ad performance, using the analysis tools. Returns the answer and the tools it used.",
+        "parameters": [
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/AskRequest"}}
+        ],
+        "responses": {
+          "200": {"description": "The answer", "schema": {"$ref": "#/definitions/AskResponse"}}
+        }
+      }
+    },
+    "/optimize": {
+      "post": {
+        "operationId": "RecommendBudget",
+        "summary": "Recommend a budget plan",
+        "description": "Recommends daily spend per channel that maximises incremental sales, within limits.",
+        "parameters": [
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/OptimizeRequest"}}
+        ],
+        "responses": {
+          "200": {"description": "The plan", "schema": {"$ref": "#/definitions/OptimizeResponse"}}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AskRequest": {
+      "type": "object",
+      "required": ["question"],
+      "properties": {
+        "question": {"type": "string", "description": "The question, in plain English"}
+      }
+    },
+    "AskResponse": {
+      "type": "object",
+      "properties": {
+        "answer": {"type": "string"},
+        "tools_used": {"type": "array", "items": {"type": "string"}},
+        "provider": {"type": "string"},
+        "latency_ms": {"type": "integer"}
+      }
+    },
+    "OptimizeRequest": {
+      "type": "object",
+      "properties": {
+        "total_daily_budget": {"type": "number", "description": "USD per day; default: current total"},
+        "max_change": {"type": "number", "description": "Largest change per channel, 0 to 1 (default 0.3)"},
+        "min_roas": {"type": "number", "description": "Optional minimum ROAS for the plan"}
+      }
+    },
+    "OptimizeResponse": {
+      "type": "object",
+      "properties": {
+        "rows": {"type": "array", "items": {"type": "object"}},
+        "note": {"type": "string"},
+        "uplift_pct": {"type": "number"}
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+# Golden questions for the Ads Copilot agent.
+#
+# expected_tools: tools a competent analyst would use (graded: any one must be called)
+# truth:          named ground-truth function in run_evals.py; the figures it returns must appear
+#                 in the answer (within tolerance). Ground truth is read from the analysis results
+#                 and the warehouse at eval time, so it never drifts from the data.
+
+- id: paths_top
+  question: What are the most common ad paths before a purchase?
+  expected_tools: [run_saved_query]
+  truth: top_path
+
+- id: ntb_by_exposure
+  question: Which ad exposure brings the highest share of new-to-brand customers?
+  expected_tools: [run_saved_query]
+  truth: ntb_dsp_only
+
+- id: dsp_frequency
+  question: How does DSP impression frequency relate to purchase rate?
+  expected_tools: [run_saved_query]
+  truth: frequency_top_bucket
+
+- id: overlap
+  question: How many shoppers were reached by both DSP and Sponsored Products? Show the ad type overlap.
+  expected_tools: [run_saved_query]
+  truth: overlap_dsp_sp
+
+- id: time_to_purchase
+  question: How long does it take from the first ad to a purchase?
+  expected_tools: [run_saved_query]
+  truth: time_dsp_late
+
+- id: campaign_cost
+  question: Which campaign had the highest cost, and what was its purchase rate?
+  expected_tools: [run_saved_query]
+  truth: top_campaign
+
+- id: last_touch_sp
+  question: How much credit does last-touch attribution give Sponsored Products?
+  expected_tools: [compare_attribution]
+  truth: last_touch_sp
+
+- id: attribution_best
+  question: Which attribution method comes closest to the true incremental split?
+  expected_tools: [compare_attribution]
+  truth: attribution_errors
+
+- id: attribution_overcredit
+  question: How many purchases does attribution credit to ads, and how many did ads really cause?
+  expected_tools: [compare_attribution]
+  truth: attribution_totals
+
+- id: geo_iroas
+  question: What incremental ROAS did the DSP geo holdout show?
+  expected_tools: [geo_test_results]
+  truth: geo_iroas
+
+- id: geo_lost_sales
+  question: How much in sales did we lose in the holdout geos while DSP was off?
+  expected_tools: [geo_test_results]
+  truth: geo_lost_sales
+
+- id: roas_by_channel
+  question: What is the ROAS of each channel according to the marketing mix model?
+  expected_tools: [channel_roas]
+  truth: mmm_roas
+
+- id: marginal_best
+  question: Which channel has the highest marginal ROAS right now?
+  expected_tools: [channel_roas]
+  truth: mmm_mroas_dsp
+
+- id: sp_saturation
+  question: Is Sponsored Products showing diminishing returns?
+  expected_tools: [channel_roas]
+  truth: mmm_mroas_sp
+
+- id: budget_default
+  question: How should we reallocate the current budget across channels?
+  expected_tools: [optimize_budget]
+  truth: plan_default
+
+- id: budget_total
+  question: Recommend a channel plan for a daily budget of $20,000.
+  expected_tools: [optimize_budget]
+  truth: plan_20k
+
+- id: budget_guardrail
+  question: Optimize the budget, but move each channel by at most 10%.
+  expected_tools: [optimize_budget]
+  truth: plan_10pct
+
+- id: sql_purchasers
+  question: Using SQL, how many unique purchasers are there?
+  expected_tools: [run_sql]
+  truth: sql_purchasers
+
+- id: sql_spend
+  question: Using SQL, show total spend by channel.
+  expected_tools: [run_sql]
+  truth: sql_spend_sp
+
+- id: sql_product_sales
+  question: Using SQL, show sales by product.
+  expected_tools: [run_sql]
+  truth: sql_top_product
+
+- id: saved_queries
+  question: What saved queries can you run?
+  expected_tools: [list_saved_queries]
+  truth: saved_query_names
