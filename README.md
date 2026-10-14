@@ -113,16 +113,16 @@ the best one: 94% of it at ±20%, 95% at ±10%. The model is most reliable near 
 | Part | What it does | Tech |
 |---|---|---|
 | Simulator (`rml/synth.py`) | AMC-shaped shopper journeys (60 days, 120k shoppers) and two years of geo x day spend and sales, with the true effect of every channel | Python, NumPy |
-| AMC-style SQL (`rml/sql/`) | Path to conversion, new-to-brand, DSP frequency, ad type overlap, time to conversion, campaign reach; rows with fewer than 100 users are dropped, as in AMC | **Snowflake SQL**, run locally on DuckDB via sqlglot |
+| AMC-style SQL (`rml/sql/`) | Path to conversion, new-to-brand, DSP frequency, ad type overlap, time to conversion, campaign reach; rows with fewer than 100 users are dropped, as in AMC | Snowflake SQL, run locally on DuckDB via sqlglot |
 | Attribution (`rml/attribution.py`) | Last and first touch, linear, Markov removal effect, Shapley | Python, pandas |
 | Incrementality (`rml/incrementality.py`) | Geo holdout: difference-in-differences and synthetic control with placebo tests | statsmodels, SciPy |
-| Marketing mix model (`rml/mmm.py`) | Adstock and Hill saturation, constrained ridge regression, time-series cross-validation, an ensemble, block bootstrap | **scikit-learn**, SciPy |
+| Marketing mix model (`rml/mmm.py`) | Adstock and Hill saturation, constrained ridge regression, time-series cross-validation, an ensemble, block bootstrap | scikit-learn, SciPy |
 | Optimizer (`rml/optimize.py`) | Daily spend per channel that maximises incremental sales, with budget, change limits and minimum ROAS | SciPy (SLSQP) |
-| Ads Copilot (`rml/agent/`) | **LLM agent** that answers questions by calling the analyses, saved queries and guarded SQL | Anthropic, OpenAI, **Azure OpenAI**, or offline mock |
-| API (`rml/api.py`) | REST endpoints and `/ask`, optional API key | **FastAPI** |
-| Power BI kit (`powerbi/`) | Star-schema export, DAX measures, theme, build guide | **Power BI** |
-| Dataiku kit (`dataiku/`) | Flow layout and Python recipes on a Snowflake connection | **Dataiku** |
-| Copilot Studio (`copilot/`, `docs/copilot-studio.md`) | OpenAPI connector so a Copilot Studio agent can call the Ads Copilot | **Microsoft Copilot Studio** |
+| Ads Copilot (`rml/agent/`) | LLM agent that answers questions by calling the analyses, saved queries and guarded SQL | Anthropic, OpenAI, Azure OpenAI, or offline mock |
+| API (`rml/api.py`) | REST endpoints and `/ask`, optional API key | FastAPI |
+| Power BI kit (`powerbi/`) | Star-schema export, DAX measures, theme, build guide | Power BI |
+| Dataiku kit (`dataiku/`) | Flow layout and Python recipes on a Snowflake connection | Dataiku |
+| Copilot Studio (`copilot/`, `docs/copilot-studio.md`) | OpenAPI connector so a Copilot Studio agent can call the Ads Copilot | Microsoft Copilot Studio |
 
 ```mermaid
 flowchart LR

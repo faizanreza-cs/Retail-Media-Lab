@@ -1,7 +1,7 @@
 [project]
 name = "retail-media-lab"
 version = "0.1.0"
-description = "Amazon Ads and AMC-style retail media analytics: path-to-conversion SQL, multi-touch attribution, geo incrementality, a marketing mix model, a budget optimizer and an ads analytics agent. Snowflake-ready SQL, Power BI and Dataiku kits."
+description = "Amazon Ads and AMC-style retail media analytics: path-to-conversion SQL, multi-touch attribution, geo incrementality, a marketing mix model, a budget optimizer and an ads analytics agent."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
