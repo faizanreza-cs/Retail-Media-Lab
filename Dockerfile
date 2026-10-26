@@ -1,10 +1,11 @@
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
-COPY --from=ghcr.io/astral-sh/uv:0.5.11 /uv /usr/local/bin/uv
-COPY pyproject.toml README.md LICENSE ./
+COPY --from=ghcr.io/astral-sh/uv:0.11.32 /uv /usr/local/bin/uv
+COPY pyproject.toml uv.lock README.md LICENSE ./
 COPY rml ./rml
-RUN uv pip install --system --no-cache ".[llm]"
+RUN uv sync --locked --no-editable --no-cache --extra llm
+ENV PATH="/app/.venv/bin:$PATH"
 # Generate the synthetic data and run every analysis at build time
 RUN rml build
 RUN useradd --create-home app && chown -R app /app

@@ -4,8 +4,7 @@ UV ?= uv
 .PHONY: setup build test lint eval eval-llm api charts powerbi docker clean
 
 setup:            ## create venv and install everything
-	$(UV) venv --allow-existing .venv
-	$(UV) pip install --python $(PY) -e ".[llm,dev]"
+	$(UV) sync --locked --extra llm --extra dev
 
 build:            ## generate data, run every analysis, write data/results.json
 	$(PY) -m rml.cli build
