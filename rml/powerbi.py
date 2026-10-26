@@ -31,7 +31,7 @@ def tables() -> dict[str, pd.DataFrame]:
     dim_date = pd.DataFrame(
         {
             "date": d.dt.date,
-            "week_start": (d - pd.to_timedelta(d.dt.weekday, unit="D")).dt.date,
+            "week_start": (d - pd.to_timedelta(d.dt.day_of_week, unit="D")).dt.date,
             "month": d.dt.strftime("%Y-%m"),
             "quarter": d.dt.year.astype(str) + "-Q" + d.dt.quarter.astype(str),
             "year": d.dt.year,

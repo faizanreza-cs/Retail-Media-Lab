@@ -209,8 +209,8 @@ def _geo_sizes(cfg: SynthConfig, rng: np.random.Generator) -> np.ndarray:
 def _baseline(cfg: SynthConfig, cal: pd.DataFrame, rng: np.random.Generator) -> np.ndarray:
     """National organic sales per day: trend, seasonality, weekday, events, coupons."""
     t = np.arange(len(cal))
-    doy = cal["date"].dt.dayofyear.to_numpy()
-    weekday = np.array([0.04, 0.01, -0.01, -0.02, -0.03, -0.01, 0.02])[cal["date"].dt.weekday]
+    doy = cal["date"].dt.day_of_year.to_numpy()
+    weekday = np.array([0.04, 0.01, -0.01, -0.02, -0.03, -0.01, 0.02])[cal["date"].dt.day_of_week]
     coupon = np.zeros(len(cal))
     for s in rng.choice(np.arange(14, len(cal) - 14, 7), 8, replace=False):
         coupon[s : s + 7] = 0.12
@@ -245,7 +245,7 @@ def _geo_layer(cfg: SynthConfig, rng: np.random.Generator) -> tuple[dict[str, pd
     hold = np.arange(n - cfg.holdout_weeks * 7, n)
     dsp = CHANNELS.index("DSP")
     planned_dsp = spend[:, dsp, :].copy()
-    spend[np.ix_(hold, [dsp], test_geos)] = 0.0
+    spend[np.ix_(hold, np.array([dsp]), test_geos)] = 0.0
 
     base = _baseline(cfg, cal, rng)
     contrib = np.zeros_like(spend)

@@ -49,13 +49,13 @@ def national_daily(
 
 def _controls(df: pd.DataFrame) -> pd.DataFrame:
     t = np.arange(len(df)) / 365.0
-    doy = df["date"].dt.dayofyear.to_numpy()
+    doy = df["date"].dt.day_of_year.to_numpy()
     c = pd.DataFrame({"trend": t}, index=df.index)
     for k in (1, 2):
         c[f"sin{k}"] = np.sin(2 * np.pi * k * doy / 365.25)
         c[f"cos{k}"] = np.cos(2 * np.pi * k * doy / 365.25)
     for d in range(1, 7):
-        c[f"weekday_{d}"] = (df["date"].dt.weekday == d).astype(float)
+        c[f"weekday_{d}"] = (df["date"].dt.day_of_week == d).astype(float)
     for name in sorted(e for e in df["event"].unique() if e):
         c[f"event: {name}"] = (df["event"] == name).astype(float)
     c["new_year"] = df["new_year"]
