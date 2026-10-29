@@ -42,17 +42,28 @@ def optimize(
     def sales(x: np.ndarray) -> float:
         return float(sum(model.response(c, x[i]) for i, c in enumerate(CHANNELS)))
 
-    # Solve for u = spend / current spend (around 1) rather than dollars: SLSQP's
-    # finite-difference steps are absolute, too small to move sales at dollar scale.
+    def mroas(x: np.ndarray) -> np.ndarray:
+        return np.array([model.marginal_roas(c, float(x[i])) for i, c in enumerate(CHANNELS)])
+
+    # Solve for u = spend / current spend (around 1) rather than dollars, with exact gradients
+    # (the marginal ROAS). Differencing the objective instead can't resolve ftol 1e-12: near the
+    # optimum the line search then failed, or not, depending on the CPU's rounding.
     scale = max(sales(base), 1.0)
-    cons: list[dict[str, Any]] = [{"type": "eq", "fun": lambda u: (u @ base - total) / total}]
+    cons: list[dict[str, Any]] = [
+        {"type": "eq", "fun": lambda u: (u @ base - total) / total, "jac": lambda u: base / total}
+    ]
     if min_roas is not None:
         cons.append(
-            {"type": "ineq", "fun": lambda u: (sales(u * base) - min_roas * (u @ base)) / scale}
+            {
+                "type": "ineq",
+                "fun": lambda u: (sales(u * base) - min_roas * (u @ base)) / scale,
+                "jac": lambda u: (mroas(u * base) - min_roas) * base / scale,
+            }
         )
     res = minimize(
         lambda u: -sales(u * base) / scale,
         np.ones_like(base),
+        jac=lambda u: -mroas(u * base) * base / scale,
         method="SLSQP",
         bounds=[(1 - max_change, 1 + max_change)] * len(base),
         constraints=cons,

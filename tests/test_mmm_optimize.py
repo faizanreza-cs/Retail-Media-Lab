@@ -82,3 +82,17 @@ def test_true_curves_match_the_simulator(built):
     for ch in CHANNELS:
         x = t["media"][ch]["bau_daily_spend"]
         assert tc.marginal_roas(ch, x) == pytest.approx(t["media"][ch]["mroas_at_bau"], rel=0.01)
+
+
+def test_tight_limits_and_other_budgets_still_find_a_plan(built):
+    # differencing the objective, SLSQP stopped on a failed line search for some of these, and
+    # on some CPUs for a ±10% limit at the current budget
+    t = built["truth"]
+    current = {r["channel"]: r["bau_daily_spend"] for r in built["mmm"]["channels"]}
+    total = sum(current.values())
+    for model in (pipeline.curves(built), optimize.TrueCurves(t["media"], t["geo_weights"])):
+        for max_change in (0.02, 0.06, 0.1, 0.14):
+            for scale in (0.7, 1.0, 1.15, 1.3, 1.5):
+                plan = optimize.optimize(model, current, total * scale, max_change)
+                spent = sum(r["recommended_daily_spend"] for r in plan["channels"])
+                assert spent == pytest.approx(total * scale, rel=1e-6)

@@ -189,10 +189,11 @@ role for the agent and API), and the repo carries starter kits for
 
 ## Tests and evals
 
-**95 offline tests** cover the simulator, every saved query on DuckDB, attribution on hand-checked
-journeys, geo-test recovery with a placebo that must find nothing, MMM recovery and the
-optimizer's constraints, the SQL guard (22 leak attempts blocked, 9 legitimate queries kept), the
-LLM providers with fake clients, the API, and the kits against the code they wrap.
+**96 offline tests** cover the simulator, every saved query on DuckDB, attribution on hand-checked
+journeys, geo-test recovery with a placebo that must find nothing, MMM recovery, the optimizer's
+constraints and plans at tight limits, the SQL guard (22 leak attempts blocked, 9 legitimate
+queries kept), the LLM providers with fake clients, the API, and the kits against the code they
+wrap.
 
 **Agent eval** (`make eval`): 21 golden questions with the expected tool and the facts each answer
 must contain, read from the data at eval time. The offline mock passes 21/21, which checks the
