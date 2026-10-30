@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retail Media Lab: what your Amazon ads caused</title>
+<meta name="description" content="Retail Media Lab measures what Amazon ads caused with attribution, a geo holdout, a marketing mix model and a budget optimizer, each scored against the truth.">
+<link rel="canonical" href="https://faizanreza-cs.github.io/Retail-Media-Lab/">
+<meta name="author" content="Faizan Reza">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Retail Media Lab">
+<meta property="og:title" content="Retail Media Lab: what your Amazon ads caused">
+<meta property="og:description" content="Retail Media Lab measures what Amazon ads caused with attribution, a geo holdout, a marketing mix model and a budget optimizer, each scored against the truth.">
+<meta property="og:url" content="https://faizanreza-cs.github.io/Retail-Media-Lab/">
+<meta property="og:image" content="https://faizanreza-cs.github.io/Retail-Media-Lab/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Retail Media Lab: What did your ads cause?">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@cs_faizan">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/touch-icon.png">
+<link rel="preload" href="assets/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/styles.css">
+<style>:root{--a:#C2410C;--a-50:#FDF2EF;--a-100:#FAE5DF;--a-200:#F3C8BA;--a-400:#D97A5C;--pop-1:#6366F1;--pop-2:#14B8A6;--a-ink:#C2410C}</style>
+<script>(function(h){if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!location.hash)h.classList.add("loading")})(document.documentElement)</script>
+<script src="assets/app.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareSourceCode", "name": "Retail Media Lab", "description": "Retail Media Lab measures what Amazon ads caused with attribution, a geo holdout, a marketing mix model and a budget optimizer, each scored against the truth.", "url": "https://faizanreza-cs.github.io/Retail-Media-Lab/", "codeRepository": "https://github.com/faizanreza-cs/Retail-Media-Lab", "programmingLanguage": "Python", "license": "https://opensource.org/licenses/MIT", "author": {"@type": "Person", "name": "Faizan Reza", "url": "https://github.com/faizanreza-cs", "sameAs": ["https://www.linkedin.com/in/faizanreza", "https://x.com/cs_faizan"]}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="loader" aria-hidden="true">
+  <img src="assets/mark.svg" alt="" width="56" height="56">
+  <div class="loader-num">0</div>
+  <div class="loader-bar"><i></i></div>
+  <p class="label">Getting things ready</p>
+</div>
+
+<header class="nav" id="top">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top"><img src="assets/logo.svg" alt="Retail Media Lab, back to top" width="133" height="30"></a>
+    <nav aria-label="Sections"><ul class="nav-links"><li><a href="#overview">Overview</a></li><li><a href="#how">How it works</a></li><li><a href="#features">Features</a></li><li><a href="#results">Results</a></li><li><a href="#use">Use it</a></li><li><a href="#faq">FAQ</a></li></ul></nav>
+    <a class="btn btn-dark" href="https://github.com/faizanreza-cs/Retail-Media-Lab">GitHub <svg class="out" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 7h10v10"/> <path d="M7 17 17 7"/></svg></a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <h1 class="hero-title" id="hero-title"><span class="line">What did</span> <span class="line">your ads</span> <span class="line"><span class="outline">cause?</span></span></h1>
+      <p class="hero-sub">Amazon Ads analytics the way a brand&#x27;s data science team does it, with every method scored against a simulator that knows the true answer.</p>
+      <div class="hero-cta">
+        <a class="btn btn-dark" href="https://github.com/faizanreza-cs/Retail-Media-Lab">View on GitHub <svg class="go" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/> <path d="m12 5 7 7-7 7"/></svg></a>
+        <a class="btn btn-ghost" href="#results">See the results</a>
+      </div>
+    </div>
+    <div class="hero-scroll" aria-hidden="true"><span class="label">Scroll</span><span class="bar"></span></div>
+    <div class="hero-year"><p class="label">2026</p><strong>Attribute. Test. Plan.</strong></div>
+  </section>
+
+  <section class="overview" id="overview" aria-label="Overview">
+    <div class="wrap"><p class="lit"><span class="w">Amazon&#x27;s</span> <span class="w">attribution</span> <span class="w">reports</span> <span class="w">credit</span> <span class="w">an</span> <span class="w">ad</span> <span class="w">with</span> <span class="w">every</span> <span class="w">purchase</span> <span class="w">it</span> <span class="w">touched.</span> <span class="w">A</span> <span class="w">brand&#x27;s</span> <span class="w">real</span> <span class="w">questions</span> <span class="w">are</span> <span class="w">different:</span> <span class="w">what</span> <span class="w">did</span> <span class="w">the</span> <span class="w">ads</span> <span class="w">cause,</span> <span class="w">and</span> <span class="w">where</span> <span class="w">should</span> <span class="w">the</span> <span class="w">next</span> <span class="w">dollar</span> <span class="w">go?</span> <span class="w">Retail</span> <span class="w">Media</span> <span class="w">Lab</span> <span class="w">simulates</span> <span class="w">two</span> <span class="w">years</span> <span class="w">of</span> <span class="w">advertising</span> <span class="w">for</span> <span class="w">a</span> <span class="w">fictional</span> <span class="w">supplements</span> <span class="w">brand,</span> <span class="w">so</span> <span class="w">every</span> <span class="w">standard</span> <span class="w">method</span> <span class="w">can</span> <span class="w">be</span> <span class="w">scored</span> <span class="w">against</span> <span class="w">the</span> <span class="w">truth.</span></p></div>
+  </section>
+
+  <section class="how" id="how" aria-labelledby="how-title">
+    <div class="wrap"><p class="label how-label">How it works</p></div>
+    <div class="pin">
+      <div class="sticky">
+        <div class="steps-track" tabindex="0" role="group" aria-label="How it works, step by step">
+          <article class="step-intro card">
+            <h2 id="how-title">From ad journeys to a budget plan.</h2>
+            <p>Each method answers one question, and each answer is checked against what the simulator knows.</p>
+          </article>
+          <article class="step card">
+            <div class="step-tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/> <path d="M8.5 2h7"/> <path d="M7 16h10"/></svg></div>
+            <svg class="step-ghost" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/> <path d="M8.5 2h7"/> <path d="M7 16h10"/></svg>
+            <svg class="viz" viewBox="0 0 210 210" aria-hidden="true" focusable="false">
+  <rect x="55" y="26" width="100" height="140" rx="16" class="f-white k-line"/>
+  <rect x="73" y="54" width="64" height="9" rx="4.5" class="f-a200"/>
+  <rect x="73" y="76" width="50" height="9" rx="4.5" class="f-line"/>
+  <rect x="73" y="98" width="58" height="9" rx="4.5" class="f-line"/>
+  <rect x="73" y="120" width="40" height="9" rx="4.5" class="f-line"/>
+  <rect class="scan" x="44" y="42" width="122" height="5" rx="2.5" fill-opacity=".9" style="fill:var(--a)"/>
+  <rect class="float" x="30" y="150" width="12" height="12" rx="3" style="fill:var(--pop-2)"/>
+  <circle class="float b" cx="174" cy="44" r="5" style="fill:var(--pop-1)"/>
+</svg>
+            <p class="label">01</p>
+            <h3>Simulate</h3>
+            <p>Ad journeys with a known truth</p>
+          </article>
+          <article class="step card">
+            <div class="step-tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 3h5v5"/> <path d="M8 3H3v5"/> <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/> <path d="m15 9 6-6"/></svg></div>
+            <svg class="step-ghost" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 3h5v5"/> <path d="M8 3H3v5"/> <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/> <path d="m15 9 6-6"/></svg>
+            <svg class="viz" viewBox="0 0 210 210" aria-hidden="true" focusable="false">
+  <circle cx="105" cy="105" r="66" class="k-a200"/>
+  <circle cx="105" cy="105" r="50" class="f-a50"/>
+  <g class="orbit"><circle cx="105" cy="39" r="8" class="f-a"/></g>
+  <g class="orbit b"><circle cx="171" cy="105" r="6.5" class="f-p1"/></g>
+  <g class="orbit c"><circle cx="105" cy="171" r="5.5" class="f-p2"/></g>
+  <circle class="pulse f-a" cx="105" cy="105" r="13"/>
+</svg>
+            <p class="label">02</p>
+            <h3>Attribute</h3>
+            <p>Five ways to split the credit</p>
+          </article>
+          <article class="step card">
+            <div class="step-tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/> <circle cx="12" cy="10" r="3"/></svg></div>
+            <svg class="step-ghost" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/> <circle cx="12" cy="10" r="3"/></svg>
+            <svg class="viz" viewBox="0 0 210 210" aria-hidden="true" focusable="false">
+  <rect x="34" y="58" width="104" height="70" rx="14" class="f-white k-line"/>
+  <rect x="50" y="76" width="58" height="9" rx="4.5" class="f-a200"/>
+  <rect x="50" y="96" width="42" height="9" rx="4.5" class="f-line"/>
+  <circle class="ripple" cx="126" cy="112" r="20"/>
+  <g class="bob"><path d="M126 112 L126 172 L141 157 L153 182 L165 176 L153 151 L174 151 Z" class="f-a"/></g>
+  <rect class="float f-p2" x="160" y="44" width="11" height="11" rx="3"/>
+</svg>
+            <p class="label">03</p>
+            <h3>Test</h3>
+            <p>A geo holdout for DSP</p>
+          </article>
+          <article class="step card">
+            <div class="step-tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v16a2 2 0 0 0 2 2h16"/> <path d="m19 9-5 5-4-4-3 3"/></svg></div>
+            <svg class="step-ghost" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v16a2 2 0 0 0 2 2h16"/> <path d="m19 9-5 5-4-4-3 3"/></svg>
+            <svg class="viz" viewBox="0 0 210 210" aria-hidden="true" focusable="false">
+  <rect class="grow" x="40" y="88" width="24" height="96" rx="12" style="fill:var(--a-200)"/>
+  <rect class="grow" x="76" y="40" width="24" height="144" rx="12" style="fill:var(--a)"/>
+  <rect class="grow" x="112" y="64" width="24" height="120" rx="12" style="fill:var(--pop-1)"/>
+  <rect class="grow" x="148" y="28" width="24" height="156" rx="12" style="fill:var(--pop-2)"/>
+</svg>
+            <p class="label">04</p>
+            <h3>Model</h3>
+            <p>A marketing mix model with intervals</p>
+          </article>
+          <article class="step card">
+            <div class="step-tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></div>
+            <svg class="step-ghost" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+            <svg class="viz" viewBox="0 0 210 210" aria-hidden="true" focusable="false">
+  <g class="twinkle"><path d="M105 30 C110 78 132 100 180 105 C132 110 110 132 105 180 C100 132 78 110 30 105 C78 100 100 78 105 30 Z" class="f-a"/></g>
+  <g class="twinkle" style="animation-delay:-1.5s"><path d="M168 30 C169 42 174 47 186 48 C174 49 169 54 168 66 C167 54 162 49 150 48 C162 47 167 42 168 30 Z" class="f-p1"/></g>
+  <rect class="float f-p2" x="40" y="156" width="12" height="12" rx="3"/>
+</svg>
+            <p class="label">05</p>
+            <h3>Plan</h3>
+            <p>The next dollar where it earns most</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features" aria-labelledby="features-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="sec-title reveal" id="features-title">Ads analytics, scored.</h2>
+        <p class="reveal" style="--d:.1s">The standard methods a brand&#x27;s data science team uses, each held to the truth.</p>
+      </div>
+      <div class="grid3">
+          <article class="feature card reveal" style="--d:0.00s">
+            <div class="tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><ellipse cx="12" cy="5" rx="9" ry="3"/> <path d="M3 5V19A9 3 0 0 0 21 19V5"/> <path d="M3 12A9 3 0 0 0 21 12"/></svg></div>
+            <h3>AMC-style SQL</h3>
+            <p>Path to conversion, new-to-brand, frequency, overlap and time to conversion; groups under 100 users dropped, as in AMC.</p>
+            <p class="label">01</p>
+          </article>
+          <article class="feature card reveal" style="--d:0.08s">
+            <div class="tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/> <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg></div>
+            <h3>Attribution, five ways</h3>
+            <p>Last and first touch, linear, Markov and Shapley, each against the true share.</p>
+            <p class="label">02</p>
+          </article>
+          <article class="feature card reveal" style="--d:0.16s">
+            <div class="tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/> <path d="M15 5.764v15"/> <path d="M9 3.236v15"/></svg></div>
+            <h3>Geo holdout</h3>
+            <p>Difference-in-differences and synthetic control, with placebo tests that check the intervals.</p>
+            <p class="label">03</p>
+          </article>
+          <article class="feature card reveal" style="--d:0.00s">
+            <div class="tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v16a2 2 0 0 0 2 2h16"/> <path d="m19 9-5 5-4-4-3 3"/></svg></div>
+            <h3>Marketing mix model</h3>
+            <p>Adstock and saturation per channel, an ensemble of the best fits, and bootstrap intervals.</p>
+            <p class="label">04</p>
+          </article>
+          <article class="feature card reveal" style="--d:0.08s">
+            <div class="tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="21" x2="14" y1="4" y2="4"/> <line x1="10" x2="3" y1="4" y2="4"/> <line x1="21" x2="12" y1="12" y2="12"/> <line x1="8" x2="3" y1="12" y2="12"/> <line x1="21" x2="16" y1="20" y2="20"/> <line x1="12" x2="3" y1="20" y2="20"/> <line x1="14" x2="14" y1="2" y2="6"/> <line x1="8" x2="8" y1="10" y2="14"/> <line x1="16" x2="16" y1="18" y2="22"/></svg></div>
+            <h3>Budget optimizer</h3>
+            <p>Daily spend per channel under a budget, change limits and a minimum ROAS.</p>
+            <p class="label">05</p>
+          </article>
+          <article class="feature card reveal" style="--d:0.16s">
+            <div class="tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <h3>Ads Copilot</h3>
+            <p>An LLM agent that answers by calling the analyses, saved queries and guarded SQL.</p>
+            <p class="label">06</p>
+          </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="results" id="results" aria-labelledby="results-title">
+    <div class="wrap">
+      <div class="panel card">
+        <p class="label">Results</p>
+        <h2 id="results-title">Scored against<br>the truth.</h2>
+        <p class="note">All data is synthetic: two years of advertising for a fictional brand, Fernway Nutrition. The simulator knows the true effect of every channel.</p>
+        <div class="frame">
+            <div class="metric">
+              <div class="metric-top"><span class="label">01</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 3h5v5"/> <path d="M8 3H3v5"/> <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/> <path d="m15 9 6-6"/></svg></div>
+              <b>1.8x</b>
+              <p>how much click-based attribution over-credits ads: 5,809 purchases credited, 3,234 caused.</p>
+            </div>
+            <div class="metric">
+              <div class="metric-top"><span class="label">02</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/> <circle cx="12" cy="10" r="3"/></svg></div>
+              <b>2.03</b>
+              <p>DSP&#x27;s incremental ROAS from the geo holdout (95% CI 1.87 to 2.19). True value: 1.90.</p>
+            </div>
+            <div class="metric">
+              <div class="metric-top"><span class="label">03</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></div>
+              <b>+1.0%</b>
+              <p>ad-driven sales at the same budget from the optimizer&#x27;s plan, about $168k a year: 89% of the best possible plan.</p>
+            </div>
+        </div>
+        <figure class="chart">
+          <img src="assets/attribution_vs_truth.png" alt="Grouped bar chart of the share of credited purchases by attribution method (last touch, linear, Markov, Shapley) for Sponsored Products, Sponsored Brands, Sponsored Display and Amazon DSP, against the true causal share. Last touch gives Sponsored Products 58% against a true 43%." width="1480" height="932" loading="lazy" decoding="async">
+          <figcaption>Last touch over-credits Sponsored Products: 58% of the credit against a true 43%.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="band"><div class="wrap band-grid"><div><b>20</b><span class="label">Geos in the holdout</span></div><div><b>728</b><span class="label">Days in the mix model</span></div><div><b>120k</b><span class="label">Simulated shoppers</span></div></div></div>
+  </section>
+
+  <section class="uses" id="uses" aria-labelledby="uses-title">
+    <input class="sr-only" type="checkbox" id="pause-uses">
+    <div class="wrap uses-head">
+      <div>
+        <h2 class="sec-title reveal" id="uses-title">For the questions<br>ad budgets raise.</h2>
+        <p class="uses-intro reveal" style="--d:.1s">What the ads caused, which report to trust, and where the next dollar should go.</p>
+      </div>
+      <label class="pause" for="pause-uses"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="14" y="4" width="4" height="16" rx="1"/> <rect x="6" y="4" width="4" height="16" rx="1"/></svg> Pause</label>
+    </div>
+    <div class="marquee">
+      <div class="marquee-track">
+        <div class="set">
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/> <circle cx="12" cy="12" r="6"/> <circle cx="12" cy="12" r="2"/></svg>
+              <h3>What did the ads cause?</h3>
+              <p>Incremental sales, not credited sales.</p>
+              <p class="for">For brand managers</p>
+              <p class="label">01</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              <h3>Where should the next dollar go?</h3>
+              <p>A budget plan within your limits.</p>
+              <p class="for">For media planners</p>
+              <p class="label">02</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/> <circle cx="12" cy="10" r="3"/></svg>
+              <h3>Is DSP worth it?</h3>
+              <p>A geo holdout with honest intervals.</p>
+              <p class="for">For marketing science</p>
+              <p class="label">03</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="6" cy="19" r="3"/> <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/> <circle cx="18" cy="5" r="3"/></svg>
+              <h3>How do shoppers convert?</h3>
+              <p>Paths, overlap and time to conversion, in SQL.</p>
+              <p class="for">For analytics teams</p>
+              <p class="label">04</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/> <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/> <path d="M7 21h10"/> <path d="M12 3v18"/> <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+              <h3>Which report do we trust?</h3>
+              <p>Every attribution rule against the truth.</p>
+              <p class="for">For finance partners</p>
+              <p class="label">05</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <h3>Ask the copilot</h3>
+              <p>Answers that call the analyses.</p>
+              <p class="for">For the whole team</p>
+              <p class="label">06</p>
+            </article>
+        </div>
+        <div class="set dup" aria-hidden="true">
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/> <circle cx="12" cy="12" r="6"/> <circle cx="12" cy="12" r="2"/></svg>
+              <h3>What did the ads cause?</h3>
+              <p>Incremental sales, not credited sales.</p>
+              <p class="for">For brand managers</p>
+              <p class="label">01</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              <h3>Where should the next dollar go?</h3>
+              <p>A budget plan within your limits.</p>
+              <p class="for">For media planners</p>
+              <p class="label">02</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/> <circle cx="12" cy="10" r="3"/></svg>
+              <h3>Is DSP worth it?</h3>
+              <p>A geo holdout with honest intervals.</p>
+              <p class="for">For marketing science</p>
+              <p class="label">03</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="6" cy="19" r="3"/> <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/> <circle cx="18" cy="5" r="3"/></svg>
+              <h3>How do shoppers convert?</h3>
+              <p>Paths, overlap and time to conversion, in SQL.</p>
+              <p class="for">For analytics teams</p>
+              <p class="label">04</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/> <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/> <path d="M7 21h10"/> <path d="M12 3v18"/> <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+              <h3>Which report do we trust?</h3>
+              <p>Every attribution rule against the truth.</p>
+              <p class="for">For finance partners</p>
+              <p class="label">05</p>
+            </article>
+            <article class="use card">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <h3>Ask the copilot</h3>
+              <p>Answers that call the analyses.</p>
+              <p class="for">For the whole team</p>
+              <p class="label">06</p>
+            </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="use-it" id="use" aria-labelledby="use-title">
+    <div class="wrap">
+      <h2 class="center-title reveal" id="use-title">Run it, or have it built.</h2>
+      <div class="plans">
+        <article class="plan reveal">
+          <div class="plan-head"><h3>Run it yourself</h3><span class="badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="16 18 22 12 16 6"/> <polyline points="8 6 2 12 8 18"/></svg> Open source</span></div>
+          <p class="plan-text">Free under the MIT license. The build takes about 30 seconds. No API key needed.</p>
+          <ol class="cmds">
+            <li>
+              <div class="cmd-head"><p class="cmd-label">Clone</p><button class="copy" type="button" hidden>Copy</button></div>
+              <div class="cmd"><pre><code>git clone https://github.com/faizanreza-cs/retail-media-lab &amp;&amp; cd retail-media-lab</code></pre></div>
+            </li>
+            <li>
+              <div class="cmd-head"><p class="cmd-label">Install</p><button class="copy" type="button" hidden>Copy</button></div>
+              <div class="cmd"><pre><code>make setup</code></pre></div>
+            </li>
+            <li>
+              <div class="cmd-head"><p class="cmd-label">Build, then ask</p><button class="copy" type="button" hidden>Copy</button></div>
+              <div class="cmd"><pre><code>make build
+rml ask &quot;What incremental ROAS did the DSP geo holdout show?&quot;</code></pre></div>
+            </li>
+          </ol>
+          <div class="plan-foot"><a class="btn btn-accent btn-block" href="https://github.com/faizanreza-cs/Retail-Media-Lab">View on GitHub <svg class="go" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/> <path d="m12 5 7 7-7 7"/></svg></a></div>
+        </article>
+        <article class="plan featured reveal" style="--d:.1s">
+          <div class="plan-head"><h3>Work with me</h3><span class="badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/> <rect width="20" height="14" x="2" y="6" rx="2"/></svg> For teams</span></div>
+          <p class="plan-text">I build measurement, analytics and AI agents like this one for CPG and consumer health brands.</p>
+          <ul class="checks"><li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Incrementality tests and mix models on your ad data</span></li><li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>AMC-style SQL and attribution you can defend</span></li><li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Budget plans within the limits you set</span></li><li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>LLM agents with guardrails, evals and citations</span></li></ul>
+          <p class="callout"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m11 17 2 2a1 1 0 1 0 3-3"/> <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/> <path d="m21 3 1 11h-2"/> <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/> <path d="M3 4h8"/></svg> Open to freelance projects and full-time roles.</p>
+          <div class="plan-foot">
+            <a class="btn btn-dark btn-block" href="mailto:faizanreza01@gmail.com?subject=Retail%20Media%20Lab">Email me <svg class="go" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/> <path d="m12 5 7 7-7 7"/></svg></a>
+            <div class="socials">
+              <a class="btn btn-ghost" href="https://www.linkedin.com/in/faizanreza"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/> <rect width="4" height="12" x="2" y="9"/> <circle cx="4" cy="4" r="2"/></svg> LinkedIn</a>
+              <a class="btn btn-ghost" href="https://x.com/cs_faizan"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg> <span class="sr-only">Follow on</span> X</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <h2 class="center-title reveal" id="faq-title">A few questions</h2>
+      <div class="faq-list">
+        <details class="card reveal" open>
+          <summary>Is this real Amazon data?<span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>No. Real Amazon Marketing Cloud data can&#x27;t be shared, so a simulator builds two years of advertising for a fictional brand. Its value is that it knows the true answer, which real data never gives you.</p></div>
+        </details>
+        <details class="card reveal">
+          <summary>Why does attribution over-credit?<span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>It credits every purchase by a shopper who saw an ad. Sponsored Products reach shoppers already searching the category, who often buy anyway.</p></div>
+        </details>
+        <details class="card reveal">
+          <summary>How sure is the mix model?<span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>DSP is pinned down: 1.95 against a true 2.00, in line with the geo test. Sponsored Products is always on and near saturation, so its interval is wide (1.32 to 3.89); an experiment would narrow it.</p></div>
+        </details>
+        <details class="card reveal">
+          <summary>Would it run on our AMC instance?<span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>The saved queries are written in AMC&#x27;s style and follow its 100-user rule, but AMC&#x27;s real tables have more columns and rules, so they&#x27;d need adapting.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <h2 id="cta-title">Want to know what your ads caused?</h2>
+        <p>I can design the test, build the model and plan the budget with your team.</p>
+        <div class="cta-actions">
+          <a class="btn btn-white" href="mailto:faizanreza01@gmail.com?subject=Retail%20Media%20Lab">Email me <svg class="go" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/> <path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="btn btn-line" href="https://github.com/faizanreza-cs/Retail-Media-Lab">View on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="assets/logo.svg" alt="Retail Media Lab" width="142" height="32" loading="lazy">
+        <p>Amazon Ads analytics the way a brand&#x27;s data science team does it, with every method scored against a simulator that knows the true answer.</p>
+      </div>
+      <div>
+        <h2 class="label">Project</h2>
+        <ul>
+          <li><a href="https://github.com/faizanreza-cs/Retail-Media-Lab">Source on GitHub</a></li>
+          <li><a href="https://github.com/faizanreza-cs/Retail-Media-Lab#readme">README</a></li>
+          <li><a href="https://github.com/faizanreza-cs/Retail-Media-Lab/blob/main/LICENSE">License (MIT)</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="label">More projects</h2>
+        <ul><li><a href="https://faizanreza-cs.github.io/PDLwatch/">PDLwatch</a></li><li><a href="https://faizanreza-cs.github.io/PharmaPulse/">PharmaPulse</a></li><li><a href="https://faizanreza-cs.github.io/Shelfsense/">ShelfSense</a></li><li><a href="https://faizanreza-cs.github.io/agentkit-enterprise/">AgentKit Enterprise</a></li><li><a href="https://faizanreza-cs.github.io/Docflow-agent/">DocFlow Agent</a></li><li><a href="https://faizanreza-cs.github.io/Ragdesk/">RAGdesk</a></li><li><a href="https://faizanreza-cs.github.io/Pharma-MCP/">Pharma MCP</a></li></ul>
+      </div>
+      <div>
+        <h2 class="label">Contact</h2>
+        <ul>
+          <li><a href="mailto:faizanreza01@gmail.com">Email</a></li>
+          <li><a href="https://www.linkedin.com/in/faizanreza">LinkedIn</a></li>
+          <li><a href="https://x.com/cs_faizan">X</a></li>
+          <li><a href="https://github.com/faizanreza-cs">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-base">
+      <p>© 2026 Faizan Reza</p>
+      <p>Icons: <a href="https://lucide.dev">Lucide</a>. Font: Outfit. <a href="assets/LICENSES.txt">Licenses</a></p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
